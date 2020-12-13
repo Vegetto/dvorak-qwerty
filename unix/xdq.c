@@ -160,6 +160,7 @@ int HandleError(Display* display, XErrorEvent* error) {
 }
 
 int main(int argc, char* argv[]) {
+  //fprintf(stdout, "Started DQ Keys\n");
   InitKeycodeMapping();
 
   // Open the display and get the root window.
@@ -197,8 +198,10 @@ int main(int argc, char* argv[]) {
     //   with it won't happen, which would be bad.
     int keycodes[] = {37, 64, 109, 115};
     for (int i = 0; i < arraysize(keycodes); i++) {
+      //fprintf(stdout, "Grabby em\n");
       XGrabKey(display, keycodes[i], 0, window, True,
                GrabModeAsync, GrabModeAsync);
+      //fprintf(stdout, "Grabbied em\n");
     }
   } else {
     // Method 2:  Grab each individual key combination.
@@ -212,21 +215,29 @@ int main(int argc, char* argv[]) {
     unsigned int modifiers[] = {
       // Control.
       ControlMask,
+      ControlMask | Mod2Mask,
       ControlMask | ShiftMask,
+      ControlMask | ShiftMask | Mod2Mask,
 
       // Alt.
       Mod1Mask,
+      Mod1Mask | Mod2Mask,
       Mod1Mask | ShiftMask,
+      Mod1Mask | ShiftMask | Mod2Mask,
 
 #ifdef XQD_GREEDY
       // Command/"Windows" key.  This is usually used for system-level hotkeys,
       // so only grab it in greedy mode.
       Mod4Mask,
+      Mod4Mask | Mod2Mask,
       Mod4Mask | ShiftMask,
+      Mod4Mask | ShiftMask | Mod2Mask,
 
       // Control + Alt.  Also typically used for system-level hotkeys.
       ControlMask | Mod1Mask,
+      ControlMask | Mod1Mask | Mod2Mask,
       ControlMask | Mod1Mask | ShiftMask,
+      ControlMask | Mod1Mask | ShiftMask | Mod2Mask,
 #endif
 
       // TODO(kenton):  Other combinations?
@@ -238,8 +249,10 @@ int main(int argc, char* argv[]) {
 
     for (int i = 0; i < arraysize(kKeycodes); i++) {
       for (int j = 0; j < arraysize(modifiers); j++) {
+        //fprintf(stdout, "Grab em\n");
         XGrabKey(display, kKeycodes[i], modifiers[j], window, True,
                  GrabModeAsync, GrabModeAsync);
+        //fprintf(stdout, "Grabbed\n");
       }
     }
   }
@@ -261,6 +274,7 @@ int main(int argc, char* argv[]) {
   for (;;) {
     XEvent event;
     XNextEvent(display, &event);
+    //fprintf(stdout, "Key event\n");
 
     switch (event.type) {
       case KeyPress:

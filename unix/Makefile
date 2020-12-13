@@ -1,2 +1,2 @@
 xdq : xdq.c
-	gcc -c xdq.c -o xdq -std=gnu99 -O2 -lX11
+	gcc -g xdq.c -o xdq -std=gnu99 -O2 -lX11
